@@ -1,0 +1,119 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Capital Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f06, #4a90e2);
+            color: #fff;
+            text-align: center;
+        }
+        header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        main {
+            padding: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        input {
+            width: 200px;
+        }
+        button {
+            background: #4a90e2;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #357ab8;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #4a90e2;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Find the Capital City of Any Country</h1>
+    </header>
+    <main>
+        <form id="country-form">
+            <input type="text" id="country" placeholder="Enter country name" required>
+            <button type="submit">Search</button>
+        </form>
+        <table id="results" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Capital</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </main>
+
+    <script>
+        document.getElementById('country-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const country = document.getElementById('country').value;
+            fetch(`/capital?country=${country}`)
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('results');
+                    const tbody = table.querySelector('tbody');
+                    tbody.innerHTML = '';
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        table.style.display = 'table';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${data.country}</td>
+                            <td>${data.capital}</td>
+                        `;
+                        tbody.appendChild(row);
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
